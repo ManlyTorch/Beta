@@ -32,7 +32,6 @@ nm_InventorySearch(item, direction:="down", prescroll:=0, prescrolldir:="", scro
 	else
 		return 0 ; no roblox
 	offsetY := GetYOffset(hwnd)
-	MsgBox offsetY
 
 	; search inventory
 	TopText := ""
@@ -44,21 +43,22 @@ nm_InventorySearch(item, direction:="down", prescroll:=0, prescrolldir:="", scro
 		GetRobloxClientPos(hwnd)
 		
 		TextInRegion := findTextInRegion(item,, windowX, 0, 360, windowHeight, true)
-
+		
 		TopEntry := ""
-		for _, word in TextInRegion["Words"] {
-			if word.BoundingRect.h > 15 && idx > 20 {
-				TopEntry := word
-				break
+		if idx > 10 {
+			for _, word in TextInRegion["Words"] {
+				if word.BoundingRect.h > 15 {
+					TopEntry := word
+					break
+				}
 			}
 		}
 
 		if TextInRegion.Has("Word") {
 			word := TextInRegion["Word"]
-			pos := [30, word.BoundingRect.Y - windowY - offsetY]
+			pos := [30, word.BoundingRect.y + word.BoundingRect.h // 2]
 			break ; item found
 		} else if TopEntry && TopEntry.Text == TopText && TopText != "" {
-			MsgBox "Reached the top " . TopText
 			break ; at the top of inventory
 		}
 		if TopEntry {

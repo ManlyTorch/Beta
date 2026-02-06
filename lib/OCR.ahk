@@ -60,6 +60,42 @@ LevenshteinDistance(s1, s2) {
 	return d.%len1%.%len2%
 }
 
+isCorrectWord(items, wordsList, idx) {
+    word := wordsList.Words.Get(idx)
+    itemName := items[1]
+    if wordsList.Words.Length > idx {
+	    nextWord := wordsList.Words.Get(idx + 1)
+	    if (items.Length <= 1 ? nextWord.BoundingRect.y == word.BoundingRect.y : nextWord.Text != items[2]) {
+	    	return
+	    }
+    } else {
+        return itemName == word.Text
+    }
+    return True
+}
+
+isUnspacedWord(items, wordsList, idx, max:=4) {
+    if items.Length <= 1 {
+        ; I cbf trying to replace everything with spacing ngl
+        word := wordsList.Words.Get(idx)
+        itemName := items[1]
+        text := word.Text
+        Loop max {
+            curIdx := idx + A_Index
+            if wordsList.Words.length >= curIdx {
+                nextWord := wordsList.Words.Get(curIdx)
+                text .= nextWord.Text
+                if text == itemName {
+                    return True
+                }
+            } else {
+                break
+            }
+        }
+    }
+    return
+}
+
 findTextInRegion(item, img:="", x:=0, y:=0, w:=0, h:=0, absolute:=False) {
 	wordsList := {}
 	if img != "" {
@@ -77,32 +113,27 @@ findTextInRegion(item, img:="", x:=0, y:=0, w:=0, h:=0, absolute:=False) {
 	TextRegion["Words"] := wordsList.Words
 	if absolute {
 		for idx, word in wordsList.Words {
-			if itemName == word.Text {
-                if wordsList.Words.Length > idx {
-				    nextWord := wordsList.Words.Get(idx + 1)
-				    if (items.Length <= 1 ? nextWord.BoundingRect.y == word.BoundingRect.y : nextWord.Text != items[2]) {
-				    	continue
-				    }
-                }
+			if itemName == word.Text and isCorrectWord(items, wordsList, idx) {
 				TextRegion["Word"] := word
 				return TextRegion
-			}
+			} else if isUnspacedWord(items, wordsList, idx) {
+				TextRegion["Word"] := word
+				return TextRegion
+            }
 		}
 		return TextRegion
 	} else {
 		for idx, word in wordsList.Words {
 			text := word.Text
 			rect := word.BoundingRect
-			if itemName == text {
-                if wordsList.Words.Length > idx {
-				    nextWord := wordsList.Words.Get(idx + 1)
-				    if (items.Length <= 1 ? nextWord.BoundingRect.y == word.BoundingRect.y : nextWord.Text != items[2]) {
-				    	continue
-				    }
-                }
+			if itemName == word.Text and isCorrectWord(items, wordsList, idx) {
 				TextRegion["Word"] := word
 				return TextRegion
 			} else if StrLen(text) >= 1 {
+                if isUnspacedWord(items, wordsList, idx) {
+			    	TextRegion["Word"] := word
+			    	return TextRegion
+                }
     	        foundPos := InStr(StrLower(itemName), StrLower(text))
     	        dist := 0
     	        if foundPos {
@@ -121,12 +152,33 @@ findTextInRegion(item, img:="", x:=0, y:=0, w:=0, h:=0, absolute:=False) {
 	text := word.Text
 	rect := word.BoundingRect
     if bestDist[1] > .15 || bestDist[1] < 0 {
-        ; MsgBox bestDist[2].Text . ", " . rect.x . ", " . rect.y . ", " . rect.w . ", " . rect.h . ", " . bestDist[1]
-		; debug
         return TextRegion
 	}
-	
+    
+    TextRegion["Word"] := word
 	return TextRegion
+}
+
+getAvailableLang() {
+    GlobalizationPreferencesStatics := OCR.CreateClass("Windows.System.UserProfile.GlobalizationPreferences", IGlobalizationPreferencesStatics := "{01BF4326-ED37-4E96-B0E9-C1340D1EA158}")
+    LanguageFactory := OCR.CreateClass("Windows.Globalization.Language", ILanguageFactory := "{9B0252AC-0C27-44F8-B792-9793FB66C63E}")
+	ComCall(9, GlobalizationPreferencesStatics, "ptr*", &LanguageList:=0)   ; get_Languages
+	ComCall(7, LanguageList, "int*", &count:=0)   ; count
+	loop count
+	{
+		ComCall(6, LanguageList, "int", A_Index-1, "ptr*", &hString:=0)   ; get_Item
+		ComCall(6, LanguageFactory, "ptr", hString, "ptr*", &LanguageTest:=0)   ; CreateLanguage
+		ComCall(8, OCR.OcrEngineStatics, "ptr", LanguageTest, "int*", &bool:=0)   ; IsLanguageSupported
+		if (bool = 1)
+		{
+			ComCall(6, LanguageTest, "ptr*", &hText:=0)
+			b := DllCall("Combase.dll\WindowsGetStringRawBuffer", "ptr", hText, "uint*", &length:=0, "ptr")
+			text .= StrGet(b, "UTF-16") "`n"
+		}
+		ObjRelease(LanguageTest)
+	}
+	ObjRelease(LanguageList)
+	return text
 }
 
 /**
