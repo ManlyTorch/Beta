@@ -17,7 +17,7 @@ nm_InventorySearch(item, direction:="down", prescroll:=0, prescrolldir:="", scro
 	pos := 0
 	scrollDir := ((A_Index <= prescroll && prescrolldir) ? ((prescrolldir = "Down") ? "Down" : "Up") : ((direction = "down") ? "Down" : "Up"))
 	
-	; nm_OpenMenu("itemmenu")
+	nm_OpenMenu("itemmenu")
 
 	; Activate roblox window and get it's current position and height
 	if (hwnd := GetRobloxHWND())
@@ -56,7 +56,7 @@ nm_InventorySearch(item, direction:="down", prescroll:=0, prescrolldir:="", scro
 
 		if TextInRegion.Has("Word") {
 			word := TextInRegion["Word"]
-			pos := [30, word.BoundingRect.y + word.BoundingRect.h // 2]
+			pos := [30, word.BoundingRect.y + word.BoundingRect.h]
 			break ; item found
 		} else if TopEntry && TopEntry.Text == TopText && TopText != "" {
 			break ; at the top of inventory
