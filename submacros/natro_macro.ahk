@@ -29,6 +29,7 @@ You should have received a copy of the license along with Natro Macro. If not, p
 #Include "Roblox.ahk"
 #Include "DurationFromSeconds.ahk"
 #Include "nowUnix.ahk"
+#include "OCR.ahk"
 
 #Warn VarUnset, Off
 OnError (e, mode) => (mode = "Return") ? -1 : 0
@@ -2036,7 +2037,6 @@ hBitmapsSBT := Map(), hBitmapsSBT.CaseSense := 0
 #Include "collect\bitmaps.ahk"
 #Include "kill\bitmaps.ahk"
 #Include "boost\bitmaps.ahk"
-#Include "inventory\bitmaps.ahk"
 #Include "reconnect\bitmaps.ahk"
 #Include "fdc\bitmaps.ahk"
 #Include "offset\bitmaps.ahk"
