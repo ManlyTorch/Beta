@@ -79,4 +79,9 @@
 	, "PlanterHarvestFull3"
   	, "DiscordUIDCommands"
 	, "ClaimMethod"
-]
+	, "FieldFollowingFollowMode"
+	, "FieldFollowingMaxTime"
+	, "FieldFollowingChannelID"
+	, "VicHopMode"
+	, "VicHopMaxQueueTime"
+	, "VicHopChannelID"]

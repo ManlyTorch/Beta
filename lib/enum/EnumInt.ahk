@@ -366,4 +366,6 @@
 	, "prioritylistnumeric"
 	, "dayOrNight"
 	, "CheckNight"
+	, "FieldFollowingCheck"
+	, "VicHopCheck"
 ]
