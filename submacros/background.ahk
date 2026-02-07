@@ -21,6 +21,7 @@ You should have received a copy of the license along with Natro Macro. If not, p
 #Include "Gdip_ImageSearch.ahk"
 #Include "Roblox.ahk"
 #Include "DurationFromSeconds.ahk"
+#Include "OCR.ahk"
 #Include "nowUnix.ahk"
 #include "ErrorHandling.ahk"
 SetWorkingDir A_ScriptDir "\.."
@@ -50,7 +51,6 @@ NightMemoryMatchCheck := A_Args[11]
 
 pToken := Gdip_Startup()
 bitmaps := Map(), bitmaps.CaseSense := 0
-#Include "%A_ScriptDir%\..\nm_image_assets\offset\bitmaps.ahk"
 #Include "%A_ScriptDir%\..\nm_image_assets\night\bitmaps.ahk"
 
 CoordMode "Pixel", "Screen"
