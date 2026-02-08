@@ -20,6 +20,7 @@ You should have received a copy of the license along with Natro Macro. If not, p
 #Include "Gdip_ImageSearch.ahk"
 #Include "Roblox.ahk"
 #Include "DurationFromSeconds.ahk"
+#Include "OCR.ahk"
 #Include "nowUnix.ahk"
 
 OnError (e, mode) => (mode = "Return") ? -1 : 0
@@ -50,7 +51,6 @@ LastNightMemoryMatch := A_Args[12]
 
 pToken := Gdip_Startup()
 bitmaps := Map(), bitmaps.CaseSense := 0
-#Include "%A_ScriptDir%\..\nm_image_assets\offset\bitmaps.ahk"
 #Include "%A_ScriptDir%\..\nm_image_assets\night\bitmaps.ahk"
 
 CoordMode "Pixel", "Screen"
@@ -189,12 +189,12 @@ nm_dayOrNight(){
 		}
 	}
 	;return if pollen text is not visible (darkened background)
-	pBMScreen := Gdip_BitmapFromScreen(windowX+windowWidth//2 "|" windowY "|60|100")
-	if (Gdip_ImageSearch(pBMScreen, bitmaps["toppollen"], , , , , , 8) != 1) {
-		Gdip_DisposeImage(pBMScreen)
-		return
-	}
-	Gdip_DisposeImage(pBMScreen)
+	; pBMScreen := Gdip_BitmapFromScreen(windowX+windowWidth//2 "|" windowY "|60|100")
+	; if (Gdip_ImageSearch(pBMScreen, bitmaps["toppollen"], , , , , , 8) != 1) {
+	; 	Gdip_DisposeImage(pBMScreen)
+	; 	return
+	; }
+	; Gdip_DisposeImage(pBMScreen)
 
 	try {
 		pBMScreen := Gdip_BitmapFromScreen(windowX "|" windowY + 2*windowHeight//5 "|" windowWidth "|" 3*windowHeight//5)

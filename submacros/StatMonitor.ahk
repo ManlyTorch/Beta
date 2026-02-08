@@ -1,4 +1,4 @@
-﻿/*
+/*
 Natro Macro (https://github.com/NatroTeam/NatroMacro)
 Copyright © Natro Team (https://github.com/NatroTeam)
 
@@ -20,6 +20,7 @@ You should have received a copy of the license along with Natro Macro. If not, p
 #Include "Roblox.ahk"
 #Include "DurationFromSeconds.ahk"
 #Include "nowUnix.ahk"
+#Include "OCR.ahk"
 
 #Warn VarUnset, Off
 
@@ -100,7 +101,6 @@ bitmaps["pBMSatisfying"] := Gdip_BitmapFromBase64("iVBORw0KGgoAAAANSUhEUgAAAEAAA
 
 ; other
 bitmaps["pBMNatroLogo"] := Gdip_BitmapFromBase64("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")
-#Include "%A_ScriptDir%\..\nm_image_assets\offset\bitmaps.ahk"
 
 
 
@@ -115,10 +115,10 @@ ocr_enabled := 1
 ocr_language := ""
 for k,v in Map("Windows.Globalization.Language","{9B0252AC-0C27-44F8-B792-9793FB66C63E}", "Windows.Graphics.Imaging.BitmapDecoder","{438CCB26-BCEF-4E95-BAD6-23A822E58D01}", "Windows.Media.Ocr.OcrEngine","{5BFFA85A-3384-3540-9940-699120D428A8}")
 {
-	CreateHString(k, &hString)
+	hString := OCR.CreateHString(k)
 	GUID := Buffer(16), DllCall("ole32\CLSIDFromString", "WStr", v, "Ptr", GUID)
 	result := DllCall("Combase.dll\RoGetActivationFactory", "Ptr", hString, "Ptr", GUID, "PtrP", &pClass:=0)
-	DeleteHString(hString)
+	OCR.DeleteHString(hString)
 	if (result != 0)
 	{
 		ocr_enabled := 0
@@ -127,7 +127,7 @@ for k,v in Map("Windows.Globalization.Language","{9B0252AC-0C27-44F8-B792-9793FB
 }
 if (ocr_enabled = 1)
 {
-	list := ocr("ShowAvailableLanguages")
+	list := getAvailableLang()
 	for lang in ["ko","en-"] ; priority list
 	{
 		Loop Parse list, "`n", "`r"
@@ -793,6 +793,13 @@ DetectBuffs()
 	return str
 }
 
+MultiStrReplace(str, replaceMap) {
+	for needle, replacement in replaceMap {
+		str := StrReplace(str, needle, replacement)
+	}
+	return str
+}
+
 /********************************************************************
 * @description: uses OCR to detect the current honey value in BSS
 * @returns: (string) current honey value or (integer) 0 on failure
@@ -825,9 +832,9 @@ DetectHoney()
 			hBM := Gdip_CreateHBITMAPFromBitmap(pBMNew)
 			;Gdip_SaveBitmapToFile(pBMNew, i A_Index ".png")
 			Gdip_DisposeImage(pBMNew)
-			pIRandomAccessStream := HBitmapToRandomAccessStream(hBM)
+			pIRandomAccessStream := OCR.HBitmapToRandomAccessStream(hBM)
 			DllCall("DeleteObject", "Ptr", hBM)
-			try detected[v := ((StrLen((n := RegExReplace(StrReplace(StrReplace(StrReplace(StrReplace(ocr(pIRandomAccessStream, ocr_language), "o", "0"), "i", "1"), "l", "1"), "a", "4"), "\D"))) > 0) ? n : 0)] := detected.Has(v) ? [detected[v][1]+1, detected[v][2] " " i . A_Index] : [1, i . A_Index]
+			try detected[v := ((StrLen((n := RegExReplace(MultiStrReplace(OCR(pIRandomAccessStream).Text, Map("o", "0", "i", "1", "l", "1", "a", "4")), "\D"))) > 0) ? n : 0)] := detected.Has(v) ? [detected[v][1]+1, detected[v][2] " " i . A_Index] : [1, i . A_Index]
 		}
 	}
 
@@ -1774,188 +1781,6 @@ maxX(List)
 		if (IsNumber(element) && (element > X))
 			X := element
 	return X
-}
-
-/*************************************************************
-* @description: OCR with UWP API
-* @author malcev, teadrinker
-* @url https://www.autohotkey.com/boards/viewtopic.php?t=72674
-*************************************************************/
-HBitmapToRandomAccessStream(hBitmap) {
-	static IID_IRandomAccessStream := "{905A0FE1-BC53-11DF-8C49-001E4FC686DA}"
-			, IID_IPicture            := "{7BF80980-BF32-101A-8BBB-00AA00300CAB}"
-			, PICTYPE_BITMAP := 1
-			, BSOS_DEFAULT   := 0
-			, sz := 8 + A_PtrSize * 2
-
-	DllCall("Ole32\CreateStreamOnHGlobal", "Ptr", 0, "UInt", true, "PtrP", &pIStream:=0, "UInt")
-
-	PICTDESC := Buffer(sz, 0)
-	NumPut("uint", sz
-		, "uint", PICTYPE_BITMAP
-		, "ptr", hBitmap, PICTDESC)
-
-	riid := CLSIDFromString(IID_IPicture)
-	DllCall("OleAut32\OleCreatePictureIndirect", "Ptr", PICTDESC, "Ptr", riid, "UInt", false, "PtrP", &pIPicture:=0, "UInt")
-	; IPicture::SaveAsFile
-	ComCall(15, pIPicture, "Ptr", pIStream, "UInt", true, "UIntP", &size:=0, "UInt")
-	riid := CLSIDFromString(IID_IRandomAccessStream)
-	DllCall("ShCore\CreateRandomAccessStreamOverStream", "Ptr", pIStream, "UInt", BSOS_DEFAULT, "Ptr", riid, "PtrP", &pIRandomAccessStream:=0, "UInt")
-	ObjRelease(pIPicture)
-	ObjRelease(pIStream)
-	Return pIRandomAccessStream
-}
-
-CLSIDFromString(IID, &CLSID?) {
-	CLSID := Buffer(16)
-	if res := DllCall("ole32\CLSIDFromString", "WStr", IID, "Ptr", CLSID, "UInt")
-	throw Error("CLSIDFromString failed. Error: " . Format("{:#x}", res))
-	Return CLSID
-}
-
-ocr(file, lang := "FirstFromAvailableLanguages")
-{
-	static OcrEngineStatics, OcrEngine, MaxDimension, LanguageFactory, Language, CurrentLanguage:="", BitmapDecoderStatics, GlobalizationPreferencesStatics
-	if !IsSet(OcrEngineStatics)
-	{
-		CreateClass("Windows.Globalization.Language", ILanguageFactory := "{9B0252AC-0C27-44F8-B792-9793FB66C63E}", &LanguageFactory)
-		CreateClass("Windows.Graphics.Imaging.BitmapDecoder", IBitmapDecoderStatics := "{438CCB26-BCEF-4E95-BAD6-23A822E58D01}", &BitmapDecoderStatics)
-		CreateClass("Windows.Media.Ocr.OcrEngine", IOcrEngineStatics := "{5BFFA85A-3384-3540-9940-699120D428A8}", &OcrEngineStatics)
-		ComCall(6, OcrEngineStatics, "uint*", &MaxDimension:=0)
-	}
-	text := ""
-	if (file = "ShowAvailableLanguages")
-	{
-		if !IsSet(GlobalizationPreferencesStatics)
-			CreateClass("Windows.System.UserProfile.GlobalizationPreferences", IGlobalizationPreferencesStatics := "{01BF4326-ED37-4E96-B0E9-C1340D1EA158}", &GlobalizationPreferencesStatics)
-		ComCall(9, GlobalizationPreferencesStatics, "ptr*", &LanguageList:=0)   ; get_Languages
-		ComCall(7, LanguageList, "int*", &count:=0)   ; count
-		loop count
-		{
-			ComCall(6, LanguageList, "int", A_Index-1, "ptr*", &hString:=0)   ; get_Item
-			ComCall(6, LanguageFactory, "ptr", hString, "ptr*", &LanguageTest:=0)   ; CreateLanguage
-			ComCall(8, OcrEngineStatics, "ptr", LanguageTest, "int*", &bool:=0)   ; IsLanguageSupported
-			if (bool = 1)
-			{
-				ComCall(6, LanguageTest, "ptr*", &hText:=0)
-				b := DllCall("Combase.dll\WindowsGetStringRawBuffer", "ptr", hText, "uint*", &length:=0, "ptr")
-				text .= StrGet(b, "UTF-16") "`n"
-			}
-			ObjRelease(LanguageTest)
-		}
-		ObjRelease(LanguageList)
-		return text
-	}
-	if (lang != CurrentLanguage) or (lang = "FirstFromAvailableLanguages")
-	{
-		if IsSet(OcrEngine)
-		{
-			ObjRelease(OcrEngine)
-			if (CurrentLanguage != "FirstFromAvailableLanguages")
-				ObjRelease(Language)
-		}
-		if (lang = "FirstFromAvailableLanguages")
-			ComCall(10, OcrEngineStatics, "ptr*", OcrEngine)   ; TryCreateFromUserProfileLanguages
-		else
-		{
-			CreateHString(lang, &hString)
-			ComCall(6, LanguageFactory, "ptr", hString, "ptr*", &Language:=0)   ; CreateLanguage
-			DeleteHString(hString)
-			ComCall(9, OcrEngineStatics, "ptr", Language, "ptr*", &OcrEngine:=0)   ; TryCreateFromLanguage
-		}
-		if (OcrEngine = 0)
-		{
-			msgbox 'Can not use language "' lang '" for OCR, please install language pack.'
-			ExitApp
-		}
-		CurrentLanguage := lang
-	}
-	IRandomAccessStream := file
-	ComCall(14, BitmapDecoderStatics, "ptr", IRandomAccessStream, "ptr*", &BitmapDecoder:=0)   ; CreateAsync
-	WaitForAsync(&BitmapDecoder)
-	BitmapFrame := ComObjQuery(BitmapDecoder, IBitmapFrame := "{72A49A1C-8081-438D-91BC-94ECFC8185C6}")
-	ComCall(12, BitmapFrame, "uint*", &width:=0)   ; get_PixelWidth
-	ComCall(13, BitmapFrame, "uint*", &height:=0)   ; get_PixelHeight
-	if (width > MaxDimension) or (height > MaxDimension)
-	{
-		msgbox 'Image is to big - ' width 'x' height '.`nIt should be maximum - ' MaxDimension ' pixels'
-		ExitApp
-	}
-	BitmapFrameWithSoftwareBitmap := ComObjQuery(BitmapDecoder, IBitmapFrameWithSoftwareBitmap := "{FE287C9A-420C-4963-87AD-691436E08383}")
-	ComCall(6, BitmapFrameWithSoftwareBitmap, "ptr*", &SoftwareBitmap:=0)   ; GetSoftwareBitmapAsync
-	WaitForAsync(&SoftwareBitmap)
-	ComCall(6, OcrEngine, "ptr", SoftwareBitmap, "ptr*", &OcrResult:=0)   ; RecognizeAsync
-	WaitForAsync(&OcrResult)
-	ComCall(6, OcrResult, "ptr*", &LinesList:=0)   ; get_Lines
-	ComCall(7, LinesList, "int*", &count:=0)   ; count
-	loop count
-	{
-		ComCall(6, LinesList, "int", A_Index-1, "ptr*", &OcrLine:=0)
-		ComCall(7, OcrLine, "ptr*", &hText:=0)
-		buf := DllCall("Combase.dll\WindowsGetStringRawBuffer", "ptr", hText, "uint*", &length:=0, "ptr")
-		text .= StrGet(buf, "UTF-16") "`n"
-		ObjRelease(OcrLine)
-	}
-	Close := ComObjQuery(IRandomAccessStream, IClosable := "{30D5A829-7FA4-4026-83BB-D75BAE4EA99E}")
-	ComCall(6, Close)   ; Close
-	Close := ComObjQuery(SoftwareBitmap, IClosable := "{30D5A829-7FA4-4026-83BB-D75BAE4EA99E}")
-	ComCall(6, Close)   ; Close
-	ObjRelease(IRandomAccessStream)
-	ObjRelease(BitmapDecoder)
-	ObjRelease(SoftwareBitmap)
-	ObjRelease(OcrResult)
-	ObjRelease(LinesList)
-	return text
-}
-
-CreateClass(str, interface, &Class)
-{
-	CreateHString(str, &hString)
-	GUID := CLSIDFromString(interface)
-	result := DllCall("Combase.dll\RoGetActivationFactory", "ptr", hString, "ptr", GUID, "ptr*", &Class:=0)
-	if (result != 0)
-	{
-		if (result = 0x80004002)
-			msgbox "No such interface supported"
-		else if (result = 0x80040154)
-			msgbox "Class not registered"
-		else
-			msgbox "error: " result
-	}
-	DeleteHString(hString)
-}
-
-CreateHString(str, &hString)
-{
-	DllCall("Combase.dll\WindowsCreateString", "wstr", str, "uint", StrLen(str), "ptr*", &hString:=0)
-}
-
-DeleteHString(hString)
-{
-	DllCall("Combase.dll\WindowsDeleteString", "ptr", hString)
-}
-
-WaitForAsync(&Object)
-{
-	AsyncInfo := ComObjQuery(Object, IAsyncInfo := "{00000036-0000-0000-C000-000000000046}")
-	loop
-	{
-		ComCall(7, AsyncInfo, "uint*", &status:=0)   ; IAsyncInfo.Status
-		if (status != 0)
-		{
-			if (status != 1)
-			{
-				ComCall(8, AsyncInfo, "uint*", &ErrorCode:=0)   ; IAsyncInfo.ErrorCode
-				msgbox "AsyncInfo status error: " ErrorCode
-				ExitApp
-			}
-			break
-		}
-		sleep 10
-	}
-	ComCall(8, Object, "ptr*", &ObjectResult:=0)   ; GetResults
-	ObjRelease(Object)
-	Object := ObjectResult
 }
 
 Send_WM_COPYDATA(StringToSend, TargetScriptTitle, wParam:=0)
